@@ -1,0 +1,5 @@
+# eda
+
+`EDA_AIRTABLE_API_KEY`
+
+`EDA_SLACK_WEBHOOK`
