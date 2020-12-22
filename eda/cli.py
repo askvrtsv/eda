@@ -59,9 +59,10 @@ def send_product_list_to_slack_command() -> None:
     """Определяет какие ингредиенты потребуются на наделе,
     формирует список покупок и отправляет его в Slack."""
     menus = []
-    for date_ in _get_dates(date.today()):
+    start_date = date.today()
+    for i in range(7):
         try:
-            menu = _find_menu_at_date(date_)
+            menu = _find_menu_at_date(start_date + timedelta(days=i))
         except Exception as e:
             logging.error('can\'t fetch menu from airtable', exc_info=e)
         else:
