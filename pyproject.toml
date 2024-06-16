@@ -7,6 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+gunicorn = "^22.0.0"
 django = "^5.0.6"
 django-environ = "^0.11.2"
 python-telegram-bot = "^21.3"
