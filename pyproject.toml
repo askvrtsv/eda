@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "eda"
+version = "0.1.0"
+description = ""
+authors = ["Anton Skvortsov <askvrtsv@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0.6"
+django-environ = "^0.11.2"
+python-telegram-bot = "^21.3"
+scheduler = "^0.8.7"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+django-stubs = {extras = ["compatible-mypy"], version = "^5.0.2"}
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "eda.core.settings"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
