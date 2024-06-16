@@ -6,6 +6,7 @@ import asyncio
 import datetime as dt
 import os
 
+import pytz
 from asgiref.sync import sync_to_async
 from scheduler.asyncio import Scheduler
 from telegram.constants import ParseMode
@@ -37,9 +38,12 @@ async def send_tomorrow_menu() -> None:
 
 
 async def main():
-    schedule = Scheduler()
+    schedule = Scheduler(tzinfo=dt.UTC)
 
-    schedule.cyclic(dt.timedelta(seconds=1), send_tomorrow_menu)
+    schedule.daily(
+        dt.time(hour=17, tzinfo=pytz.timezone("Europe/Moscow")),
+        send_tomorrow_menu,
+    )
 
     while True:
         await asyncio.sleep(1)

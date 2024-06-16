@@ -7,7 +7,22 @@ env = environ.Env(DEBUG=(bool, False))
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
 
 DATABASES = {
     "default": {
@@ -17,6 +32,8 @@ DATABASES = {
 }
 
 DEBUG = env("DEBUG")
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -28,7 +45,7 @@ INSTALLED_APPS = [
     "eda.food",
 ]
 
-SECRET_KEY = env("SECRET_KEY")
+LANGUAGE_CODE = "ru-ru"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -41,6 +58,16 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "core.urls"
+
+SECRET_KEY = env("SECRET_KEY")
+
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+
+TIME_ZONE = "Europe/Moscow"
+
+USE_I18N = True
+USE_TZ = True
 
 TEMPLATES = [
     {
@@ -59,30 +86,3 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "core.wsgi.application"
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-LANGUAGE_CODE = "ru-ru"
-
-TIME_ZONE = "Europe/Moscow"
-
-USE_I18N = True
-
-USE_TZ = True
-
-STATIC_URL = "static/"
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
