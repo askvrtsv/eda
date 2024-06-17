@@ -25,8 +25,9 @@ FROM python:3.12-slim-bullseye as runtime
 WORKDIR /opt/eda
 
 ENV \
-VIRTUAL_ENV=/opt/eda/.venv \
-PATH="/opt/eda/.venv/bin:$PATH"
+PATH="/opt/eda/.venv/bin:$PATH" \
+PYTHONPATH=/opt/eda \
+VIRTUAL_ENV=/opt/eda/.venv
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 COPY eda ./eda
