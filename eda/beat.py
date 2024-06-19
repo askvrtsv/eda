@@ -1,21 +1,18 @@
-import django
-
-django.setup()
-
 import asyncio
 import datetime as dt
-import os
 
+import django
 import pytz
 from asgiref.sync import sync_to_async
 from scheduler.asyncio import Scheduler
 from telegram.constants import ParseMode
 
-from eda.bot import application
-from eda.food import models, services
-from eda.telegrambot.messages import generate_menu_message
+django.setup()
 
-CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
+from eda.bot import application  # noqa: E402
+from eda.core import settings  # noqa: E402
+from eda.food import models, services  # noqa: E402
+from eda.telegrambot.messages import generate_menu_message  # noqa: E402
 
 get_menu_recipes_at = sync_to_async(
     services.get_menu_recipes_at, thread_sensitive=False
@@ -31,9 +28,11 @@ async def send_tomorrow_menu() -> None:
         return None
 
     if message := generate_menu_message(menu):
-        await application.bot.send_message(CHAT_ID, f"Меню на {menu_date:%d.%m}")
         await application.bot.send_message(
-            CHAT_ID, message, parse_mode=ParseMode.MARKDOWN_V2
+            settings.TELEGRAM_CHAT_ID, f"Меню на {menu_date:%d.%m}"
+        )
+        await application.bot.send_message(
+            settings.TELEGRAM_CHAT_ID, message, parse_mode=ParseMode.MARKDOWN_V2
         )
 
 

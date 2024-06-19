@@ -1,7 +1,5 @@
-import os
-
 from telegram.ext import Application
 
-TOKEN = os.environ["TELEGRAM_TOKEN"]
+from eda.core import settings
 
-application = Application.builder().token(TOKEN).build()
+application = Application.builder().token(settings.TELEGRAM_TOKEN).build()
