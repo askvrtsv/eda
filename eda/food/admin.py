@@ -15,6 +15,11 @@ class MenuRecipeInline(admin.TabularInline):
     extra = 3
 
 
+@admin.register(models.Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ["name"]
@@ -22,9 +27,24 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    fields = ["name", "how_to", "num_portions"]
+    fields = ["name", "how_to", "num_portions", "tags"]
     inlines = [IngredientInline]
-    list_display = ["name", "num_portions"]
+    list_display = ["name", "num_portions", "tags_"]
+    search_fields = ["name"]
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .prefetch_related(
+                "tags",
+            )
+        )
+
+    def tags_(self, obj: models.Menu) -> bool:
+        return ", ".join(tag.name for tag in obj.tags.all())
+
+    tags_.short_description = "Теги"
 
 
 @admin.register(models.Menu)

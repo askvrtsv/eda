@@ -4,6 +4,29 @@ from django.utils import formats
 from eda.core.models import BaseModel
 
 
+class Tag(BaseModel):
+    name = models.CharField("тег", max_length=50, unique=True)
+
+    class Meta:
+        db_table = "tags"
+        ordering = ["name"]
+        verbose_name = "тег"
+        verbose_name_plural = "теги"
+
+
+class Recipe(BaseModel):
+    name = models.CharField("название", max_length=255, unique=True)
+    num_portions = models.PositiveSmallIntegerField("кол-во порций", default=1)
+    how_to = models.TextField("инструкция", max_length=4096, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    class Meta:
+        db_table = "recipes"
+        ordering = ["name"]
+        verbose_name = "блюдо"
+        verbose_name_plural = "блюда"
+
+
 class Product(BaseModel):
     name = models.CharField("название", max_length=255, unique=True)
     show_in_grocery_list = models.BooleanField(
@@ -15,18 +38,6 @@ class Product(BaseModel):
         ordering = ["name"]
         verbose_name = "продукт"
         verbose_name_plural = "продукты"
-
-
-class Recipe(BaseModel):
-    name = models.CharField("название", max_length=255, unique=True)
-    num_portions = models.PositiveSmallIntegerField("количество порций", default=1)
-    how_to = models.TextField("инструкция", max_length=4096, null=True, blank=True)
-
-    class Meta:
-        db_table = "recipes"
-        ordering = ["name"]
-        verbose_name = "блюдо"
-        verbose_name_plural = "блюда"
 
 
 class Ingredient(BaseModel):
@@ -87,4 +98,4 @@ class MenuRecipes(BaseModel):
         db_table = "menu_recipes"
         ordering = ["recipe__name"]
         verbose_name = "блюдо"
-        verbose_name_plural = "завтрак"
+        verbose_name_plural = "блюда"
