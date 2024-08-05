@@ -6,6 +6,9 @@ from eda.core.models import BaseModel
 
 class Product(BaseModel):
     name = models.CharField("название", max_length=255, unique=True)
+    show_in_grocery_list = models.BooleanField(
+        "показывать в списке покупок", default=True
+    )
 
     class Meta:
         db_table = "products"

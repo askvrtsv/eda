@@ -22,6 +22,8 @@ poetry install --only=main --no-interaction --no-ansi
 
 FROM python:3.12-slim-bullseye as runtime
 
+RUN apt-get update && apt-get install sqlite3
+
 WORKDIR /opt/eda
 
 ENV \

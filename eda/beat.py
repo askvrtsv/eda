@@ -1,47 +1,46 @@
 import asyncio
+import collections
 import datetime as dt
 
 import django
 import pytz
-from asgiref.sync import sync_to_async
 from scheduler.asyncio import Scheduler
 from telegram.constants import ParseMode
 
 django.setup()
 
-from eda.bot import application  # noqa: E402
 from eda.core import settings  # noqa: E402
 from eda.food import models, services  # noqa: E402
-from eda.telegrambot.messages import generate_menu_message  # noqa: E402
-
-get_menu_recipes_at = sync_to_async(
-    services.get_menu_recipes_at, thread_sensitive=False
-)
+from eda.telegrambot import messages, utils  # noqa: E402
 
 
-async def send_tomorrow_menu() -> None:
-    menu_date = dt.date.today() + dt.timedelta(days=1)
+async def _send_menu(
+    menu: collections.defaultdict[str, list[str]], menu_date: dt.date
+) -> None:
+    if menu_message := messages.menu(menu):
+        bot = utils.get_telegram().bot
+        await bot.send_message(settings.TELEGRAM_CHAT_ID, messages.menu_date(menu_date))
+        await bot.send_message(
+            settings.TELEGRAM_CHAT_ID, menu_message, parse_mode=ParseMode.MARKDOWN_V2
+        )
 
+
+async def send_today_menu() -> None:
+    menu_date = dt.date.today()
     try:
-        menu = await get_menu_recipes_at(menu_date)
+        menu = await services.get_menu_recipes_at(menu_date)
     except models.Menu.DoesNotExist:
         return None
-
-    if message := generate_menu_message(menu):
-        await application.bot.send_message(
-            settings.TELEGRAM_CHAT_ID, f"Меню на {menu_date:%d.%m}"
-        )
-        await application.bot.send_message(
-            settings.TELEGRAM_CHAT_ID, message, parse_mode=ParseMode.MARKDOWN_V2
-        )
+    else:
+        await _send_menu(menu, menu_date)
 
 
 async def main():
     schedule = Scheduler(tzinfo=dt.UTC)
 
     schedule.daily(
-        dt.time(hour=17, tzinfo=pytz.timezone("Europe/Moscow")),
-        send_tomorrow_menu,
+        dt.time(hour=7, minute=30, tzinfo=pytz.timezone("Europe/Moscow")),
+        send_today_menu,
     )
 
     while True:

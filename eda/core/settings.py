@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import environ
@@ -24,15 +23,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-TELEGRAM_CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
-TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
+TELEGRAM_CHAT_ID = env.int("TELEGRAM_CHAT_ID")
+TELEGRAM_TOKEN = env.str("TELEGRAM_TOKEN")
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.environ["DATABASE_PATH"],
+        "NAME": env.str("DATABASE_PATH"),
     }
 }
 
